@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Hex 01", "intensity": 72, "mixedUse": 68, "residential": 52, "year": 2024, "mode": "Transit" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[139.71,35.665],[139.725,35.665],[139.733,35.678],[139.725,35.691],[139.71,35.691],[139.702,35.678],[139.71,35.665]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hex 02", "intensity": 56, "mixedUse": 49, "residential": 63, "year": 2020, "mode": "Walking" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[139.733,35.665],[139.748,35.665],[139.756,35.678],[139.748,35.691],[139.733,35.691],[139.725,35.678],[139.733,35.665]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hex 03", "intensity": 84, "mixedUse": 73, "residential": 45, "year": 2015, "mode": "Mixed" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[139.756,35.665],[139.771,35.665],[139.779,35.678],[139.771,35.691],[139.756,35.691],[139.748,35.678],[139.756,35.665]]]
+      }
+    }
+  ]
+}

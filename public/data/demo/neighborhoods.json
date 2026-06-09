@@ -1,0 +1,97 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Central Station District",
+        "value": 88,
+        "intensity": 74,
+        "population": 42000,
+        "capacity": 67,
+        "year": 2024,
+        "mode": "Transit",
+        "distance": 250,
+        "housing": 72,
+        "jobs": 84,
+        "zoning": 78,
+        "landValue": 91,
+        "mixedUse": 68,
+        "residential": 34
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[139.73,35.67],[139.77,35.67],[139.77,35.7],[139.73,35.7],[139.73,35.67]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Inner Residential Belt",
+        "value": 62,
+        "intensity": 58,
+        "population": 36000,
+        "capacity": 54,
+        "year": 2020,
+        "mode": "Walking",
+        "distance": 500,
+        "housing": 63,
+        "jobs": 49,
+        "zoning": 59,
+        "landValue": 64,
+        "mixedUse": 46,
+        "residential": 62
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[139.77,35.67],[139.81,35.67],[139.81,35.7],[139.77,35.7],[139.77,35.67]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Eastern Industrial Fringe",
+        "value": 35,
+        "intensity": 44,
+        "population": 18000,
+        "capacity": 38,
+        "year": 2015,
+        "mode": "Driving",
+        "distance": 1200,
+        "housing": 28,
+        "jobs": 41,
+        "zoning": 33,
+        "landValue": 37,
+        "mixedUse": 22,
+        "residential": 41
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[139.73,35.7],[139.77,35.7],[139.77,35.73],[139.73,35.73],[139.73,35.7]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "University Corridor",
+        "value": 74,
+        "intensity": 69,
+        "population": 29000,
+        "capacity": 71,
+        "year": 2010,
+        "mode": "Mixed",
+        "distance": 800,
+        "housing": 58,
+        "jobs": 63,
+        "zoning": 69,
+        "landValue": 73,
+        "mixedUse": 61,
+        "residential": 48
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[139.77,35.7],[139.81,35.7],[139.81,35.73],[139.77,35.73],[139.77,35.7]]]
+      }
+    }
+  ]
+}

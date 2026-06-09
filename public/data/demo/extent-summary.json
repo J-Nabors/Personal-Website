@@ -1,0 +1,6 @@
+[
+  { "name": "Inner ring", "values": [42, 61] },
+  { "name": "Middle ring", "values": [57, 54] },
+  { "name": "Outer ring", "values": [66, 43] },
+  { "name": "Far catchment", "values": [49, 31] }
+]

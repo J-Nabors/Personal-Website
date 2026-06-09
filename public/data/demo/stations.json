@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tokyo Central",
+        "value": 95,
+        "boardings": 820,
+        "landValue": 91,
+        "ridership": 88,
+        "year": 2024,
+        "mode": "Transit",
+        "stationClass": "Hub",
+        "distance": 250,
+        "housing": 74,
+        "jobs": 91
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.7671,35.6812]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Shinagawa",
+        "value": 78,
+        "boardings": 610,
+        "landValue": 74,
+        "ridership": 69,
+        "year": 2020,
+        "mode": "Transit",
+        "stationClass": "Rapid",
+        "distance": 500,
+        "housing": 63,
+        "jobs": 76
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.738,35.6284]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ueno",
+        "value": 70,
+        "boardings": 540,
+        "landValue": 66,
+        "ridership": 61,
+        "year": 2015,
+        "mode": "Walking",
+        "stationClass": "Local",
+        "distance": 800,
+        "housing": 55,
+        "jobs": 58
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.7774,35.7138]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kawasaki",
+        "value": 52,
+        "boardings": 410,
+        "landValue": 57,
+        "ridership": 49,
+        "year": 2010,
+        "mode": "Mixed",
+        "stationClass": "Rapid",
+        "distance": 1200,
+        "housing": 43,
+        "jobs": 47
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.6973,35.5314]
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-06-08T21:02:07.089Z",
+  "message": "This helper prepares the static-data directories and writes a simple manifest of raw and processed files. Replace it with geopackage, PMTiles, or raster processing scripts when your local GIS toolchain is ready.",
+  "rawFiles": [
+    {
+      "name": ".gitkeep",
+      "bytes": 1,
+      "updatedAt": "2026-06-08T20:36:32.306Z"
+    }
+  ],
+  "processedFiles": [
+    {
+      "name": ".gitkeep",
+      "bytes": 1,
+      "updatedAt": "2026-06-08T20:36:32.517Z"
+    }
+  ]
+}
