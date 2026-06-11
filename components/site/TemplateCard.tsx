@@ -5,16 +5,10 @@ export function TemplateCard({ config }: { config: TemplateConfig }) {
   return (
     <Link
       href={`/templates/${config.slug}`}
-      className="panel"
-      style={{
-        display: "grid",
-        gap: 14,
-        padding: 18,
-        transition: "transform 180ms ease, border-color 180ms ease",
-      }}
+      className="panel card-link"
     >
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "start" }}>
-        <div className="eyebrow">{config.category}</div>
+        <div className="eyebrow">Template</div>
         <span className="chip">{config.location}</span>
       </div>
       <div>

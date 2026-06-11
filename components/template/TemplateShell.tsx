@@ -32,8 +32,8 @@ function InteractiveFiltersPanel({
       <div>
         <strong>Filters</strong>
         <p style={{ margin: "6px 0 0", color: "var(--muted)", lineHeight: 1.5 }}>
-          These controls are placeholders wired for template structure and can be connected to real
-          filtering logic when your datasets are uploaded.
+          These controls already drive the shared template state and can be extended with stronger
+          dataset-specific logic once your real project layers are wired in.
         </p>
       </div>
       {config.filters.map((filter) => (

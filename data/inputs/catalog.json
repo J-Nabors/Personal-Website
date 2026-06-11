@@ -1,0 +1,8 @@
+{
+  "defaults": {
+    "vectorFeatureThreshold": 15000,
+    "vectorSizeThresholdBytes": 20000000,
+    "vectorLayerThreshold": 3
+  },
+  "datasets": {}
+}

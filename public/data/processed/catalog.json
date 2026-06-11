@@ -1,0 +1,12 @@
+{
+  "generatedAt": "2026-06-11T03:46:08.027581+00:00",
+  "inputsRoot": "data/inputs",
+  "toolchain": {
+    "ogr2ogr": true,
+    "ogrinfo": true,
+    "gdalTranslate": false,
+    "pmtilesWriteAvailable": false
+  },
+  "vectors": [],
+  "rasters": []
+}

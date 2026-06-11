@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "prepare-data": "node scripts/prepare-demo-data.mjs"
+    "prepare-data": "node scripts/prepare-demo-data.mjs",
+    "ingest-data": "python scripts/ingest_data.py"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",
