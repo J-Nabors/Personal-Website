@@ -1,5 +1,6 @@
 import type { ProjectConfig, TemplateConfig } from "@/types/templates";
 
+// These shared controls keep the starter templates consistent without hiding the data shape.
 const sharedFilterControls = [
   {
     id: "year",
@@ -18,6 +19,7 @@ const sharedFilterControls = [
 ];
 
 export const templateConfigs: TemplateConfig[] = [
+  // Template entries are plain objects on purpose so they can be edited by hand without chasing helpers.
   {
     slug: "choropleth-zoning-intensity",
     title: "Choropleth: Zoning Intensity",
@@ -610,6 +612,7 @@ export const templateConfigs: TemplateConfig[] = [
   },
 ];
 
+// Project shells point at reusable templates instead of duplicating full page layout code.
 export const flagshipProject: ProjectConfig = {
   slug: "japan-zoning-land-value",
   title: "Interactive Japanese Zoning and Land Value Map",

@@ -11,6 +11,7 @@ export default function ComponentSystemPage() {
           <p style={{ margin: 0, color: "var(--muted)", lineHeight: 1.6, maxWidth: 920 }}>
             The scaffold keeps most variation in configuration rather than hardcoded pages. That makes
             it easier to add new map projects later without rewriting the same layout and control code.
+            Even here, simplicity matters more than abstraction for its own sake.
           </p>
         </div>
 
@@ -21,6 +22,7 @@ export default function ComponentSystemPage() {
             <div>`components/template/TemplateShell.tsx` assembles map, charts, filters, notes, and inspection panels.</div>
             <div>`components/map/MapPanel.tsx` owns the MapLibre instance, basemap switcher, transit toggle, and manual extent-analysis button.</div>
             <div>`lib/basemaps.ts` defines the selectable basemap styles.</div>
+            <div>`app/page.tsx` is intentionally much simpler than the project pages and is meant to stay easy to hand-edit.</div>
           </div>
         </section>
 

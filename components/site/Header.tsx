@@ -3,36 +3,19 @@ import Link from "next/link";
 export function Header() {
   return (
     <header className="site-header">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 16,
-          flexWrap: "wrap",
-        }}
-      >
-        <div style={{ display: "grid", gap: 6 }}>
-          <Link href="/" style={{ fontSize: "1.15rem", fontWeight: 700 }}>
-            Urban Science Portfolio
+      {/* Keep navigation plain and text-first so the site reads like an editable document set. */}
+      <div className="header-stack">
+        <div style={{ display: "grid", gap: 4 }}>
+          <Link href="/" className="site-title">
+            John Hendrik Nabors
           </Link>
-          <span style={{ color: "var(--muted)", fontSize: "0.92rem" }}>
-            Transportation, land use, urban science, and interactive mapping
-          </span>
+          <span className="site-subtitle">Maps, urban analysis, and geospatial research</span>
         </div>
-        <nav style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <Link className="button secondary" href="/">
-            Home
-          </Link>
-          <Link className="button secondary" href="/projects">
-            Projects
-          </Link>
-          <Link className="button secondary" href="/templates">
-            Templates
-          </Link>
-          <Link className="button secondary" href="/docs">
-            Docs
-          </Link>
+        <nav className="simple-link-list" aria-label="Site navigation">
+          <Link href="/">Home</Link>
+          <Link href="/projects">Projects</Link>
+          <Link href="/templates">Templates</Link>
+          <Link href="/docs">Docs</Link>
         </nav>
       </div>
     </header>

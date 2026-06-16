@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import sqlite3
 import subprocess
@@ -14,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INPUT_ROOT = ROOT / "data" / "inputs"
 VECTOR_INPUT_ROOT = INPUT_ROOT / "vectors"
 RASTER_INPUT_ROOT = INPUT_ROOT / "rasters"
+PUBLIC_INPUT_ROOT = ROOT / "public" / "data" / "inputs"
 CONFIG_PATH = INPUT_ROOT / "catalog.json"
 REPORT_ROOT = ROOT / "data" / "reports"
 
@@ -25,6 +27,7 @@ REPORT_OUTPUT_PATH = REPORT_ROOT / "ingestion-report.json"
 
 VECTOR_EXTENSIONS = {".gpkg", ".geojson", ".json", ".fgb", ".pmtiles"}
 RASTER_EXTENSIONS = {".tif", ".tiff", ".vrt", ".img", ".asc"}
+SHORTCUT_EXTENSION = ".lnk"
 
 DEFAULT_VECTOR_FEATURE_THRESHOLD = 15000
 DEFAULT_VECTOR_SIZE_THRESHOLD_BYTES = 20_000_000
@@ -43,12 +46,27 @@ class LayerSummary:
     feature_count: int
 
 
+@dataclass(frozen=True)
+class InputDataset:
+    source_path: Path
+    catalog_path: Path
+    source_format: str
+    resolved_from_shortcut: bool = False
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
 def relative_posix(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
+
+
+def display_path(path: Path) -> str:
+    try:
+        return relative_posix(path)
+    except ValueError:
+        return path.as_posix()
 
 
 def slugify(value: str) -> str:
@@ -66,6 +84,7 @@ def ensure_dirs() -> None:
         INPUT_ROOT,
         VECTOR_INPUT_ROOT,
         RASTER_INPUT_ROOT,
+        PUBLIC_INPUT_ROOT,
         REPORT_ROOT,
         VECTOR_OUTPUT_ROOT,
         RASTER_OUTPUT_ROOT,
@@ -85,6 +104,44 @@ def run_command(command: list[str]) -> subprocess.CompletedProcess[str]:
 
 def quote_identifier(value: str) -> str:
     return '"' + value.replace('"', '""') + '"'
+
+
+def dataset_stem(dataset: InputDataset) -> str:
+    stem = dataset.catalog_path.stem
+    if dataset.resolved_from_shortcut and stem.lower().endswith(" - shortcut"):
+        stem = stem[:-11]
+    return stem
+
+
+def resolve_windows_shortcut(path: Path) -> Path | None:
+    if os.name != "nt":
+        return None
+
+    escaped_path = str(path).replace("'", "''")
+    command = [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        (
+            "$shell = New-Object -ComObject WScript.Shell; "
+            f"$shortcut = $shell.CreateShortcut('{escaped_path}'); "
+            "[Console]::WriteLine($shortcut.TargetPath)"
+        ),
+    ]
+
+    try:
+        result = run_command(command)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
+
+    target = result.stdout.strip()
+    if not target:
+        return None
+
+    resolved = Path(target)
+    if not resolved.exists() or not resolved.is_file():
+        return None
+    return resolved
 
 
 def inspect_gpkg(path: Path) -> list[LayerSummary]:
@@ -154,13 +211,22 @@ def can_write_pmtiles() -> bool:
     return PMTILES_WRITE_AVAILABLE
 
 
-def dataset_override(config: dict[str, Any], path: Path) -> dict[str, Any]:
+def dataset_override(config: dict[str, Any], dataset: InputDataset) -> dict[str, Any]:
     datasets = config.get("datasets", {})
-    return datasets.get(path.name, datasets.get(path.stem, {}))
+    keys = [
+        dataset.catalog_path.name,
+        dataset_stem(dataset),
+        dataset.source_path.name,
+        dataset.source_path.stem,
+    ]
+    for key in keys:
+        if key in datasets:
+            return datasets[key]
+    return {}
 
 
 def choose_vector_strategy(
-    path: Path,
+    dataset: InputDataset,
     layers: list[LayerSummary],
     defaults: dict[str, Any],
     override: dict[str, Any],
@@ -186,7 +252,7 @@ def choose_vector_strategy(
 
     total_features = sum(layer.feature_count for layer in layers)
     layer_count = len(layers)
-    file_size = path.stat().st_size
+    file_size = dataset.source_path.stat().st_size
 
     simple = (
         total_features <= feature_threshold
@@ -255,34 +321,35 @@ def export_geojson_layers(
     return outputs
 
 
-def ingest_vector(path: Path, config: dict[str, Any]) -> dict[str, Any]:
-    override = dataset_override(config, path)
-    slug = slugify(str(override.get("slug", path.stem)))
+def ingest_vector(dataset: InputDataset, config: dict[str, Any]) -> dict[str, Any]:
+    override = dataset_override(config, dataset)
+    slug = slugify(str(override.get("slug", dataset_stem(dataset))))
     output_dir = VECTOR_OUTPUT_ROOT / slug
-    layers = inspect_vector(path)
-    strategy = choose_vector_strategy(path, layers, config.get("defaults", {}), override)
+    layers = inspect_vector(dataset.source_path)
+    strategy = choose_vector_strategy(dataset, layers, config.get("defaults", {}), override)
 
-    if path.suffix.lower() == ".pmtiles":
+    if dataset.source_format == ".pmtiles":
         output_dir.mkdir(parents=True, exist_ok=True)
-        output_path = output_dir / path.name
-        shutil.copy2(path, output_path)
+        output_path = output_dir / dataset.source_path.name
+        shutil.copy2(dataset.source_path, output_path)
         outputs = [relative_posix(output_path)]
         strategy["actualFormat"] = "pmtiles"
         strategy["preferredFormat"] = "pmtiles"
         strategy["fallbackReason"] = None
-    elif path.suffix.lower() in {".geojson", ".json", ".fgb"}:
+    elif dataset.source_format in {".geojson", ".json", ".fgb"}:
         output_dir.mkdir(parents=True, exist_ok=True)
-        output_path = output_dir / path.name
-        shutil.copy2(path, output_path)
+        output_path = output_dir / dataset.source_path.name
+        shutil.copy2(dataset.source_path, output_path)
         outputs = [relative_posix(output_path)]
     else:
-        outputs = export_geojson_layers(path, output_dir, layers, override)
+        outputs = export_geojson_layers(dataset.source_path, output_dir, layers, override)
 
     return {
         "kind": "vector",
-        "input": relative_posix(path),
+        "input": display_path(dataset.catalog_path),
+        "resolvedFromShortcut": dataset.resolved_from_shortcut,
         "slug": slug,
-        "sourceFormat": path.suffix.lower().lstrip("."),
+        "sourceFormat": dataset.source_format.lstrip("."),
         "preferredWebFormat": strategy["preferredFormat"],
         "actualWebFormat": strategy["actualFormat"],
         "fallbackReason": strategy["fallbackReason"],
@@ -301,9 +368,9 @@ def ingest_vector(path: Path, config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def ingest_raster(path: Path, config: dict[str, Any]) -> dict[str, Any]:
-    override = dataset_override(config, path)
-    slug = slugify(str(override.get("slug", path.stem)))
+def ingest_raster(dataset: InputDataset, config: dict[str, Any]) -> dict[str, Any]:
+    override = dataset_override(config, dataset)
+    slug = slugify(str(override.get("slug", dataset_stem(dataset))))
     output_dir = RASTER_OUTPUT_ROOT / slug
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -316,7 +383,7 @@ def ingest_raster(path: Path, config: dict[str, Any]) -> dict[str, Any]:
                 "COG",
                 "-co",
                 "COMPRESS=DEFLATE",
-                str(path),
+                str(dataset.source_path),
                 str(output_path),
             ]
         )
@@ -324,8 +391,8 @@ def ingest_raster(path: Path, config: dict[str, Any]) -> dict[str, Any]:
         fallback_reason = None
         outputs = [relative_posix(output_path)]
     else:
-        output_path = output_dir / path.name
-        shutil.copy2(path, output_path)
+        output_path = output_dir / dataset.source_path.name
+        shutil.copy2(dataset.source_path, output_path)
         actual_format = "raw-copy"
         fallback_reason = (
             "Raster conversion tools are not available in the local PATH. "
@@ -335,35 +402,80 @@ def ingest_raster(path: Path, config: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "kind": "raster",
-        "input": relative_posix(path),
+        "input": display_path(dataset.catalog_path),
+        "resolvedFromShortcut": dataset.resolved_from_shortcut,
         "slug": slug,
-        "sourceFormat": path.suffix.lower().lstrip("."),
+        "sourceFormat": dataset.source_format.lstrip("."),
         "preferredWebFormat": "cog",
         "actualWebFormat": actual_format,
         "fallbackReason": fallback_reason,
-        "fileSizeBytes": path.stat().st_size,
+        "fileSizeBytes": dataset.source_path.stat().st_size,
         "outputs": outputs,
     }
 
 
-def gather_inputs(folder: Path, extensions: set[str]) -> list[Path]:
-    return sorted(
-        [
-            path
-            for path in folder.rglob("*")
-            if path.is_file() and path.suffix.lower() in extensions
-        ]
-    )
+def dataset_sort_key(dataset: InputDataset) -> tuple[str, str]:
+    return (display_path(dataset.catalog_path).lower(), str(dataset.source_path).lower())
+
+
+def gather_inputs(folder: Path, extensions: set[str]) -> list[InputDataset]:
+    datasets: list[InputDataset] = []
+
+    if not folder.exists():
+        return datasets
+
+    for path in folder.rglob("*"):
+        if not path.is_file():
+            continue
+
+        suffix = path.suffix.lower()
+        if suffix in extensions:
+            datasets.append(
+                InputDataset(
+                    source_path=path,
+                    catalog_path=path,
+                    source_format=suffix,
+                )
+            )
+            continue
+
+        if suffix != SHORTCUT_EXTENSION:
+            continue
+
+        target_path = resolve_windows_shortcut(path)
+        if not target_path:
+            continue
+
+        target_suffix = target_path.suffix.lower()
+        if target_suffix not in extensions:
+            continue
+
+        datasets.append(
+            InputDataset(
+                source_path=target_path,
+                catalog_path=path,
+                source_format=target_suffix,
+                resolved_from_shortcut=True,
+            )
+        )
+
+    return sorted(datasets, key=dataset_sort_key)
 
 
 def main() -> None:
     ensure_dirs()
     config = read_config()
-    vectors = gather_inputs(VECTOR_INPUT_ROOT, VECTOR_EXTENSIONS)
-    rasters = gather_inputs(RASTER_INPUT_ROOT, RASTER_EXTENSIONS)
+    vectors = [
+        *gather_inputs(VECTOR_INPUT_ROOT, VECTOR_EXTENSIONS),
+        *gather_inputs(PUBLIC_INPUT_ROOT, VECTOR_EXTENSIONS),
+    ]
+    rasters = [
+        *gather_inputs(RASTER_INPUT_ROOT, RASTER_EXTENSIONS),
+        *gather_inputs(PUBLIC_INPUT_ROOT, RASTER_EXTENSIONS),
+    ]
 
-    vector_entries = [ingest_vector(path, config) for path in vectors]
-    raster_entries = [ingest_raster(path, config) for path in rasters]
+    vector_entries = [ingest_vector(dataset, config) for dataset in vectors]
+    raster_entries = [ingest_raster(dataset, config) for dataset in rasters]
 
     catalog = {
         "generatedAt": utc_now(),

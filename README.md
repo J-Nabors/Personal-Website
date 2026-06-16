@@ -23,9 +23,10 @@ This repository is a plain, code-readable working draft for a personal website f
 
 1. Run `npm run dev`
 2. Drop real datasets into `data/inputs/vectors/` or `data/inputs/rasters/`
-3. Run `npm run ingest-data`
-4. Point project pages at the generated files in `public/data/processed/`
-5. Build the static site with `npm run build` and deploy the generated `out/` folder if you use GitHub Pages
+3. Windows `.lnk` shortcuts are also supported in those folders, and `public/data/inputs/` is treated as an additional shortcut-friendly intake folder
+4. Run `npm run ingest-data`
+5. Point project pages at the generated files in `public/data/processed/`
+6. Build the static site with `npm run build` and deploy the generated `out/` folder if you use GitHub Pages
 
 ## Notes
 

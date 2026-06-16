@@ -4,6 +4,8 @@
 
 This repository is a personal website and portfolio focused on interactive geospatial projects. It should stay readable in code, simple enough to extend, and built around static deployment.
 
+Simplicity is a core requirement, not a secondary preference. The repository should stay understandable to a human reading it file by file, especially when editing manually without tooling or agent help.
+
 ## Core stack
 
 - Next.js
@@ -15,9 +17,11 @@ This repository is a personal website and portfolio focused on interactive geosp
 
 ## Site goals
 
-- The homepage should be clean and portfolio-oriented.
-- It should introduce who the site owner is, what kind of work they do, and how to enter the projects.
+- The homepage should be clean, personal, and intentionally minimal.
+- It should introduce who the site owner is, what kind of work they do, what they believe about the work, and how to enter the projects.
+- Homepage text should stay in a single main column.
 - Content that is more internal, structural, or exploratory should live one click deeper rather than crowding the homepage.
+- Navigation should favor simple text links over visually heavy cards or controls when the simpler version is enough.
 
 ## Project themes
 
@@ -83,6 +87,8 @@ Google Maps should be ignored for now.
 
 - Desktop-first, but mobile-safe.
 - Good code readability is more important than overengineering.
+- Simpler implementation is preferred over clever implementation.
+- The site should be understandable to the owner after opening only a small number of files.
 - The site should feel like a working prototype, not a brittle mockup.
 - Performance matters, especially for homepage scrolling and general navigation.
 
@@ -94,4 +100,6 @@ Google Maps should be ignored for now.
 ## Internal maintenance expectations
 
 - The repository should include documentation pages that capture the project requirements and decisions.
+- The repository should include markdown files that explain how the main folders and files fit together.
+- Key files that a human is likely to edit manually should include concise inline comments where structure may not be immediately obvious.
 - Another agent should be able to read those docs and continue work with minimal extra context.

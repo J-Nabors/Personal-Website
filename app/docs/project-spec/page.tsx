@@ -20,7 +20,8 @@ export default function ProjectSpecPage() {
           <div className="meta-list" style={{ marginTop: 12 }}>
             <div>The site is a personal portfolio of interactive geospatial projects.</div>
             <div>It should stay code-readable, modular, and simple enough to extend without heavy abstraction.</div>
-            <div>The homepage should introduce the person and the work, while deeper structural material should live behind one click.</div>
+            <div>Simplicity is a hard requirement: the repository should favor plain files, direct data flow, and minimal styling complexity.</div>
+            <div>The homepage should be a single-column personal introduction with simple links, while deeper structural material should live behind one click.</div>
           </div>
         </section>
 
@@ -70,10 +71,11 @@ export default function ProjectSpecPage() {
         </section>
 
         <section className="panel" style={{ padding: 18, background: "var(--bg-panel-strong)" }}>
-          <strong>Companion repo file</strong>
+          <strong>Companion repo files</strong>
           <p style={{ margin: "12px 0 0", color: "var(--muted)", lineHeight: 1.6 }}>
-            A markdown copy of this brief also lives at `docs/project-spec.md` so future agents can
-            discover the context directly from the repository, even before opening the site itself.
+            A markdown copy of this brief also lives at `docs/project-spec.md`, and a repository guide
+            lives at `docs/repository-anatomy.md`, so future agents and future manual editing passes can
+            discover the context directly from the repository.
           </p>
         </section>
       </section>

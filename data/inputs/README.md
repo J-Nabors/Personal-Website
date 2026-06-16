@@ -14,9 +14,11 @@ This folder is the ingestion point for datasets used by the website.
 ## Workflow
 
 1. Drop source files into `vectors/` or `rasters/`.
-2. Run `npm run ingest-data`.
-3. Review `public/data/processed/catalog.json`.
-4. Point templates or project pages at the processed outputs you want to use.
+2. Windows `.lnk` shortcuts are also supported in `vectors/` and `rasters/`.
+3. `public/data/inputs/` is also scanned so you can keep shortcut-based inputs there.
+4. Run `npm run ingest-data`.
+5. Review `public/data/processed/catalog.json`.
+6. Point templates or project pages at the processed outputs you want to use.
 
 ## Notes
 
